@@ -2,6 +2,8 @@ package application;
 	
 import java.io.*;
 import java.net.*;
+import java.util.*;
+
 import javafx.application.*;
 import javafx.geometry.*;
 import javafx.stage.*;
@@ -16,14 +18,14 @@ public class Main extends Application {
 	Socket socket;
 	TextArea textArea;
 	
-	Integer clientNum=0;
+	int ClientNum = 0;
+	int port;
 	
 	//Client 프로그램 동작 메소드
 	public void startClient(String IP, int port) {
 		Thread thread = new Thread() {
 			public void run() {
 				try {
-					//clientNum = clientNum+1;
 					socket = new Socket(IP, port);
 					receive();
 				} catch(Exception e) {
@@ -35,6 +37,7 @@ public class Main extends Application {
 				}
 			}
 		};
+		ClientNum+=1;
 		thread.start();
 	}
 	
@@ -42,12 +45,12 @@ public class Main extends Application {
 	public void stopClient() {
 		try {
 			if (socket != null && !socket.isClosed()) {
-				clientNum = clientNum-1;
 				socket.close();
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		ClientNum-=1;
 	}
 	
 	//Server로부터 메세지를 전달받는 메소드
@@ -100,7 +103,7 @@ public class Main extends Application {
 		HBox.setHgrow(userName, Priority.ALWAYS);
 		
 		TextField IPText = new TextField("127.0.0.1");
-		TextField portText = new TextField("9876");
+		TextField portText = new TextField("9999");
 		portText.setPrefWidth(80);
 		
 		hbox.getChildren().addAll(userName, IPText, portText);
@@ -132,7 +135,9 @@ public class Main extends Application {
 		Button connectionButton = new Button("접속하기");
 		connectionButton.setOnAction(event -> {
 			if (connectionButton.getText().equals("접속하기")) {
-				int port = 9876;
+				//닉네임 있는지 확인
+				
+				//연결 시도
 				try {
 					port = Integer.parseInt(portText.getText());
 				} catch(Exception e) {
@@ -141,8 +146,9 @@ public class Main extends Application {
 				
 				startClient(IPText.getText(), port);
 				Platform.runLater(() -> {
-					String enter = "[ "+userName.getText()+" 님이 채팅방에 입장하셨습니다.]\n"
-							+ "[현재 접속 인원 : "+clientNum+" 명 ]\n";
+					String enter = "[ "+userName.getText()+" 님이 채팅방에 입장하셨습니다.]\n";
+					//String enter = "[ "+userName.getText()+" 님이 채팅방에 입장하셨습니다.]\n"
+					//		+ "[현재 접속 인원 : "+0+" 명 ]\n";
 					textArea.appendText(enter);
 					//send(enter);
 				});
@@ -153,13 +159,12 @@ public class Main extends Application {
 			} else {
 				stopClient();
 				Platform.runLater(() -> {
-					String exit = "[ "+userName.getText()+" 님이 채팅방을 퇴장하셨습니다.]\n===================================\n"
-							+ "[현재 접속 인원 : "+clientNum+" 명 ]\n";
+					String exit = "[ "+userName.getText()+" 님이 채팅방을 퇴장하셨습니다.]\n===================================\n";
+					//String exit = "[ "+userName.getText()+" 님이 채팅방을 퇴장하셨습니다.]\n===================================\n"
+					//		+ "[현재 접속 인원 : "+0+" 명 ]\n";
 					textArea.appendText(exit);
 					//send(exit);
-					//send(exit);
 				});
-				
 				connectionButton.setText("접속하기");
 				input.setDisable(true);
 				sendButton.setDisable(true);
@@ -173,15 +178,14 @@ public class Main extends Application {
 		pane.setRight(sendButton);
 		
 		root.setBottom(pane);
-		Scene scene = new Scene(root, 400, 400);
-		primaryStage.setTitle("[소챗(Sochat)ChatRoom1]");
+		Scene scene = new Scene(root, 350, 400);
+		primaryStage.setTitle("[소챗(Sochat)ChatRoom]");
 		primaryStage.setScene(scene);
 		primaryStage.setOnCloseRequest(event -> stopClient());
 		primaryStage.show();
 		
 		connectionButton.requestFocus();
 	}
-	
 	
 	//프로그램의 진입점
 	public static void main(String[] args) {
