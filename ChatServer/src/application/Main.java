@@ -113,6 +113,7 @@ public class Main extends Application {
 					String msg = String.format("[서버 종료]\n", IP, port);
 					textArea.appendText(msg);
 					toggleButton.setText("시작하기");
+					
 				});
 			}
 		});
