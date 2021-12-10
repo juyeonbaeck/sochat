@@ -1,3 +1,3 @@
 # sochat
 
-#sochat_tocken : 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
+#sochat_tocken : chatServer 파일 안 sochat_tocken.txt 참고
