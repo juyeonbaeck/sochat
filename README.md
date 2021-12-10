@@ -1,3 +1,3 @@
 # sochat
 
-#sochat_tocken : ChatServer>sochat_tocken.txt
+#sochat_tocken : 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
