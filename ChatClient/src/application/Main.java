@@ -23,7 +23,7 @@ public class Main extends Application {
 		Thread thread = new Thread() {
 			public void run() {
 				try {
-					clientNum = clientNum+1;
+					//clientNum = clientNum+1;
 					socket = new Socket(IP, port);
 					receive();
 				} catch(Exception e) {
